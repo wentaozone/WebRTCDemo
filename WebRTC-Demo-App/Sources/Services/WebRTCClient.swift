@@ -45,7 +45,8 @@ final class WebRTCClient: NSObject {
     
     required init(iceServers: [String]) {
         let config = RTCConfiguration()
-        config.iceServers = [RTCIceServer(urlStrings: iceServers)]
+        config.iceServers = [RTCIceServer(urlStrings: iceServers),
+                             RTCIceServer(urlStrings: defalutTurnServers, username: defaultTurnUsername, credential: defaultTurnPassword)]
         
         // Unified plan is more superior than planB
         config.sdpSemantics = .unifiedPlan
@@ -202,40 +203,41 @@ final class WebRTCClient: NSObject {
 extension WebRTCClient: RTCPeerConnectionDelegate {
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        debugPrint("peerConnection new signaling state: \(stateChanged)")
+        print("peerConnection new signaling state: \(stateChanged)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        debugPrint("peerConnection did add stream")
+        print("peerConnection did add stream")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        debugPrint("peerConnection did remove stream")
+        print("peerConnection did remove stream")
     }
     
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        debugPrint("peerConnection should negotiate")
+        print("peerConnection should negotiate")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        debugPrint("peerConnection new connection state: \(newState)")
+        print("peerConnection new connection state: \(newState)")
         self.delegate?.webRTCClient(self, didChangeConnectionState: newState)
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        debugPrint("peerConnection new gathering state: \(newState)")
+        print("peerConnection new gathering state: \(newState)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
+        print("peerConnection did gathering")
         self.delegate?.webRTCClient(self, didDiscoverLocalCandidate: candidate)
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
-        debugPrint("peerConnection did remove candidate(s)")
+        print("peerConnection did remove candidate(s)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        debugPrint("peerConnection did open data channel")
+        print("peerConnection did open data channel")
         self.remoteDataChannel = dataChannel
     }
 }

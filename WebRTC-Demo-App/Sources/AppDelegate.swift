@@ -43,14 +43,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // iOS 13 has native websocket support. For iOS 12 or lower we will use 3rd party library.
         let webSocketProvider: WebSocketProvider
         
-        if !Config.useSocket {
+        switch Config.signalingType {
+        case .websocket:
             if #available(iOS 13.0, *) {
                 webSocketProvider = NativeWebSocket(url: self.config.signalingServerUrl)
             } else {
                 webSocketProvider = StarscreamWebSocket(url: self.config.signalingServerUrl)
             }
-        }else{
+        case .socket:
             webSocketProvider = Socket(host: Config.host, port: Config.port)
+        case .socketIO:
+            webSocketProvider = SocketIO(url: Config.socketIOURL)
         }
         
         return SignalingClient(webSocket: webSocketProvider)

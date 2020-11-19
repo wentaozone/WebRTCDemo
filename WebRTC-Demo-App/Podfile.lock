@@ -2,23 +2,32 @@ PODS:
   - CocoaAsyncSocket (7.6.4)
   - GoogleWebRTC (1.1.31999)
   - HandyJSON (5.0.2)
+  - Socket.IO-Client-Swift (15.2.0):
+    - Starscream (~> 3.1)
+  - Starscream (3.1.1)
 
 DEPENDENCIES:
   - CocoaAsyncSocket
   - GoogleWebRTC (~> 1.1)
   - HandyJSON
+  - Socket.IO-Client-Swift (~> 15.2.0)
+  - Starscream
 
 SPEC REPOS:
   https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
     - CocoaAsyncSocket
     - GoogleWebRTC
     - HandyJSON
+    - Socket.IO-Client-Swift
+    - Starscream
 
 SPEC CHECKSUMS:
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
+  Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
+  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
 
-PODFILE CHECKSUM: 364b713b9e359071f834e0801e0321dde276dbae
+PODFILE CHECKSUM: 006afb365500d3998bf9037d7da5153923a961aa
 
 COCOAPODS: 1.9.3
