@@ -11,12 +11,15 @@ import CocoaAsyncSocket
 
 class Socket: NSObject, WebSocketProvider, GCDAsyncSocketDelegate {
     private var socket: GCDAsyncSocket!
-    private let url: URL
+    private var backQueue = DispatchQueue(label: "com.fiture.webRTC", qos: .background, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)
+    private let host: String
+    private let port: UInt16
     
-    init(url:URL) {
-        self.url = url
+    init(host: String, port: UInt16) {
+        self.host = host
+        self.port = port
         super.init()
-        self.socket = GCDAsyncSocket(delegate: self, delegateQueue: .main)
+        self.socket = GCDAsyncSocket(delegate: self, delegateQueue: backQueue)
     }
     
     
@@ -27,9 +30,8 @@ class Socket: NSObject, WebSocketProvider, GCDAsyncSocketDelegate {
     //MARK: - WebSocketProviderDelegate
     func connect() {
         do {
-            print("socket: 开始连接 \(url)")
-//            try self.socket.connect(to: url, withTimeout: 5)
-            try self.socket.connect(toHost: "139.155.3.157", onPort: 3000, withTimeout: 5)
+            print("socket: 开始连接 \(host):\(port)")
+            try self.socket.connect(toHost: host, onPort: port, withTimeout: 5)
         } catch let error {
             print("socket: 开始连接失败 \(error)")
         }
@@ -41,7 +43,7 @@ class Socket: NSObject, WebSocketProvider, GCDAsyncSocketDelegate {
     
     
     //MARK: - Socket
-    func socket(_ sock: GCDAsyncSocket, didConnectTo url: URL) {
+    func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         print("socket: \(#function)")
         self.delegate?.webSocketDidConnect(self)
         sock.readData(withTimeout: -1, tag: 0)
