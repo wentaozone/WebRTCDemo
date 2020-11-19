@@ -1,0 +1,9 @@
+# source 'https://github.com/CocoaPods/Specs.git'
+source 'https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git'
+platform :ios, '10.0'
+
+target 'WebRTC-Demo' do
+    use_frameworks!
+    pod 'GoogleWebRTC', '~> 1.1'
+    pod 'CocoaAsyncSocket'
+end
