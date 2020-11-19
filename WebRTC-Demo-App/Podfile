@@ -6,4 +6,5 @@ target 'WebRTC-Demo' do
     use_frameworks!
     pod 'GoogleWebRTC', '~> 1.1'
     pod 'CocoaAsyncSocket'
+    pod 'HandyJSON'
 end

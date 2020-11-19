@@ -152,20 +152,25 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func sendDataDidTap(_ sender: UIButton) {
-        let alert = UIAlertController(title: "Send a message to the other peer",
-                                      message: "This will be transferred over WebRTC data channel",
-                                      preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.placeholder = "Message to send"
+//        let alert = UIAlertController(title: "Send a message to the other peer",
+//                                      message: "This will be transferred over WebRTC data channel",
+//                                      preferredStyle: .alert)
+//        alert.addTextField { (textField) in
+//            textField.placeholder = "Message to send"
+//        }
+//        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+//        alert.addAction(UIAlertAction(title: "Send", style: .default, handler: { [weak self, unowned alert] _ in
+//            guard let dataToSend = alert.textFields?.first?.text?.data(using: .utf8) else {
+//                return
+//            }
+//            self?.webRTCClient.sendData(dataToSend)
+//        }))
+//        self.present(alert, animated: true, completion: nil)
+        
+        let md = MeasureData()
+        if let jsonStr = md.toJSONString(), let resp = jsonStr.data(using: .utf8){
+            self.webRTCClient.sendData(resp)
         }
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Send", style: .default, handler: { [weak self, unowned alert] _ in
-            guard let dataToSend = alert.textFields?.first?.text?.data(using: .utf8) else {
-                return
-            }
-            self?.webRTCClient.sendData(dataToSend)
-        }))
-        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -221,11 +226,39 @@ extension MainViewController: WebRTCClientDelegate {
     }
     
     func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
-        DispatchQueue.main.async {
-            let message = String(data: data, encoding: .utf8) ?? "(Binary: \(data.count) bytes)"
-            let alert = UIAlertController(title: "Message from WebRTC", message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+//        DispatchQueue.main.async {
+//            let message = String(data: data, encoding: .utf8) ?? "(Binary: \(data.count) bytes)"
+//            let alert = UIAlertController(title: "Message from WebRTC", message: message, preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+//            self.present(alert, animated: true, completion: nil)
+//        }
+        
+        guard let str = String(data: data, encoding: .utf8) else {
+            return
+        }
+        guard var recive = MeasureData.deserialize(from: str) else {
+            return
+        }
+        switch recive.type {
+        case .resp:
+            let time = Int(NSDate().timeIntervalSince1970 * 1000)
+            let during = time - recive.time
+            print("收到响应: \(recive.num) 耗时 \(during)ms  数据 \(str)")
+            
+            if recive.num > 100 {
+                return
+            }
+            var md = MeasureData()
+            md.num = recive.num + 1
+            if let jsonStr = md.toJSONString(), let resp = jsonStr.data(using: .utf8){
+                self.webRTCClient.sendData(resp)
+            }
+        case .req:
+            print("收到请求 \(recive.num)")
+            recive.type = .resp
+            if let jsonStr = recive.toJSONString(), let resp = jsonStr.data(using: .utf8){
+                self.webRTCClient.sendData(resp)
+            }
         }
     }
 }
