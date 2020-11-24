@@ -93,24 +93,14 @@ class SocketIO: NSObject, WebSocketProvider {
         
         switch message {
         case .candidate(let iceCandidate):
+            print("send data candidate: \(iceCandidate)")
             var payload = [String: AnyObject]()
-            print(" \(payload) \(iceCandidate) ")
-            /*
-         try {
-                         JSONObject payload = new JSONObject();
-                         payload.put("label", candidate.sdpMLineIndex);
-                         payload.put("id", candidate.sdpMid);
-                         payload.put("candidate", candidate.sdp);
-                         sendMessage(id, "candidate", payload);
-                     } catch (JSONException e) {
-                         e.printStackTrace();
-                     }
-         */
             payload["label"] = iceCandidate.sdpMLineIndex as AnyObject
             payload["id"] = iceCandidate.sdpMid as AnyObject
             payload["candidate"] = iceCandidate.sdp as AnyObject
             sendMessage(to: fromUid, type: "candidate", payload: payload)
         case .sdp(let sdp):
+            print("send data sdp: \(sdp)")
             var payload = [String: AnyObject]()
             payload["type"] = sdp.type.rawValue as AnyObject
             payload["sdp"] = sdp.sdp as AnyObject

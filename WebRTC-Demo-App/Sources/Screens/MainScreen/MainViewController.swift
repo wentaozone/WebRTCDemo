@@ -237,6 +237,7 @@ extension MainViewController: WebRTCClientDelegate {
             return
         }
         guard var recive = MeasureData.deserialize(from: str) else {
+            print("收到数据 \(str)")
             return
         }
         switch recive.type {
