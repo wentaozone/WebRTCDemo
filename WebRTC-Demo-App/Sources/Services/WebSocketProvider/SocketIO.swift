@@ -54,11 +54,10 @@ class SocketIO: NSObject, WebSocketProvider {
             print("socketIO: 收到from \(from) type: \(type)")
             self.fromUid = from
             
-            if self.otherClientIds.contains(self.fromUid) {
-                return
+            if !self.otherClientIds.contains(self.fromUid) {
+                self.otherClientIds.append(self.fromUid)
+                self.delegate?.webSocket(self, didRecevied: self.otherClientIds)
             }
-            self.otherClientIds.append(self.fromUid)
-            self.delegate?.webSocket(self, didRecevied: self.otherClientIds)
             
             var payload = [String: AnyObject]()
             if type != "init" {

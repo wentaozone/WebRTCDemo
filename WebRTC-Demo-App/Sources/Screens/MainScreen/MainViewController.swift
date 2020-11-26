@@ -122,7 +122,7 @@ class MainViewController: UIViewController {
         }
     }
     
-    @IBAction private func answerDidTap(_ sender: UIButton) {
+    @IBAction private func answerDidTap(_ sender: UIButton?) {
         self.webRTCClient.answer { (localSdp) in
             self.hasLocalSdp = true
             self.signalClient.send(sdp: localSdp)
@@ -189,6 +189,10 @@ extension MainViewController: SignalClientDelegate {
         print("Received remote sdp")
         self.webRTCClient.set(remoteSdp: sdp) { (error) in
             self.hasRemoteSdp = true
+            
+            if sdp.type == .offer {
+                self.answerDidTap(nil)
+            }
         }
     }
     
