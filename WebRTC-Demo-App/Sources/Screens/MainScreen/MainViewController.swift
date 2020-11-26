@@ -26,6 +26,7 @@ class MainViewController: UIViewController {
     @IBOutlet private weak var webRTCStatusLabel: UILabel?
     @IBOutlet private weak var clientLabel: UILabel!
     @IBOutlet private weak var otherClientTV: UITextView!
+    @IBOutlet private weak var despLabel: UILabel!
     
     private var signalingConnected: Bool = false {
         didSet {
@@ -259,12 +260,25 @@ extension MainViewController: WebRTCClientDelegate {
             print("收到数据 \(str)")
             return
         }
+        
+        func main(_   block:@escaping ()->Void){
+            if Thread.isMainThread {
+                block()
+            }else{
+                DispatchQueue.main.async {
+                    block()
+                }
+            }
+        }
+        
         switch recive.type {
         case .resp:
             let time = Int(NSDate().timeIntervalSince1970 * 1000)
             let during = time - recive.time
             print("收到响应: \(recive.num) 耗时 \(during)ms  数据 \(str)")
-            
+            main {
+                self.despLabel.text = "收到响应:\(recive.num) \(during)ms"
+            }
             if recive.num > 100 {
                 return
             }
@@ -275,6 +289,10 @@ extension MainViewController: WebRTCClientDelegate {
             }
         case .req:
             print("收到请求 \(recive.num)")
+            main {
+                self.despLabel.text = "收到请求:\(recive.num)"
+            }
+
             recive.type = .resp
             if let jsonStr = recive.toJSONString(), let resp = jsonStr.data(using: .utf8){
                 self.webRTCClient.sendData(resp)
