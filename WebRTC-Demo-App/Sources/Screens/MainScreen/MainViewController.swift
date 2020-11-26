@@ -24,6 +24,8 @@ class MainViewController: UIViewController {
     @IBOutlet private weak var remoteCandidatesLabel: UILabel?
     @IBOutlet private weak var muteButton: UIButton?
     @IBOutlet private weak var webRTCStatusLabel: UILabel?
+    @IBOutlet private weak var clientLabel: UILabel!
+    @IBOutlet private weak var otherClientTV: UITextView!
     
     private var signalingConnected: Bool = false {
         didSet {
@@ -194,6 +196,19 @@ extension MainViewController: SignalClientDelegate {
         print("Received remote candidate")
         self.remoteCandidateCount += 1
         self.webRTCClient.set(remoteCandidate: candidate)
+    }
+    func signalClient(_ signalClient: SignalingClient, didInited clientId: String) {
+        self.clientLabel.text = clientId
+    }
+    func signalClient(_ signalClient: SignalingClient, didRecevied otherClientIds: [String]) {
+        let ss = otherClientIds.reduce("") { (result, id) -> String in
+            if result == "" {
+                return result + id
+            }else {
+                return result + "\n" + id
+            }
+        }
+        otherClientTV.text = ss
     }
 }
 

@@ -18,4 +18,6 @@ protocol WebSocketProviderDelegate: class {
     func webSocketDidConnect(_ webSocket: WebSocketProvider)
     func webSocketDidDisconnect(_ webSocket: WebSocketProvider)
     func webSocket(_ webSocket: WebSocketProvider, didReceiveData data: Data)
+    func webSocket(_ webSocket: WebSocketProvider, didInit clientId: String)
+    func webSocket(_ webSocket: WebSocketProvider, didRecevied otherClientIds: [String])
 }

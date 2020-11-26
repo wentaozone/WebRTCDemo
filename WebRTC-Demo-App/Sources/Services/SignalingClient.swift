@@ -14,6 +14,8 @@ protocol SignalClientDelegate: class {
     func signalClientDidDisconnect(_ signalClient: SignalingClient)
     func signalClient(_ signalClient: SignalingClient, didReceiveRemoteSdp sdp: RTCSessionDescription)
     func signalClient(_ signalClient: SignalingClient, didReceiveCandidate candidate: RTCIceCandidate)
+    func signalClient(_ signalClient: SignalingClient, didInited clientId: String)
+    func signalClient(_ signalClient: SignalingClient, didRecevied otherClientIds: [String])
 }
 
 final class SignalingClient {
@@ -70,6 +72,13 @@ extension SignalingClient: WebSocketProviderDelegate {
             debugPrint("Trying to reconnect to signaling server...")
             self.webSocket.connect()
         }
+    }
+    
+    func webSocket(_ webSocket: WebSocketProvider, didInit clientId: String) {
+        self.delegate?.signalClient(self, didInited: clientId)
+    }
+    func webSocket(_ webSocket: WebSocketProvider, didRecevied otherClientIds: [String]) {
+        self.delegate?.signalClient(self, didRecevied: otherClientIds)
     }
     
     func webSocket(_ webSocket: WebSocketProvider, didReceiveData data: Data) {

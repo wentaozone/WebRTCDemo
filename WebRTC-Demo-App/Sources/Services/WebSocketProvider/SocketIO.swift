@@ -20,6 +20,7 @@ class SocketIO: NSObject, WebSocketProvider {
     private var fromUid = ""
     private var clientId = ""
     private let encoder = JSONEncoder()
+    private var otherClientIds = [String]()
 
     init(url: URL) {
         self.url = url
@@ -37,6 +38,8 @@ class SocketIO: NSObject, WebSocketProvider {
         })
         socket?.on(clientEvent: .disconnect, callback: { (data, ack) in
             print("socketIO: 连接断开")
+            self.otherClientIds.removeAll()
+            self.delegate?.webSocket(self, didRecevied: self.otherClientIds)
             self.delegate?.webSocketDidDisconnect(self)
         })
         socket?.on("message", callback: { (array, ack) in
@@ -50,6 +53,12 @@ class SocketIO: NSObject, WebSocketProvider {
             
             print("socketIO: 收到from \(from) type: \(type)")
             self.fromUid = from
+            
+            if self.otherClientIds.contains(self.fromUid) {
+                return
+            }
+            self.otherClientIds.append(self.fromUid)
+            self.delegate?.webSocket(self, didRecevied: self.otherClientIds)
             
             var payload = [String: AnyObject]()
             if type != "init" {
@@ -72,6 +81,7 @@ class SocketIO: NSObject, WebSocketProvider {
             if let id = array.first as? String {
                 print("socketIO: 收到clientId \(id)")
                 self.clientId = id
+                self.delegate?.webSocket(self, didInit: id)
             }
             
             self.socket?.emit("init", "")

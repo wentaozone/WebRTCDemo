@@ -197,7 +197,7 @@ final class WebRTCClient: NSObject {
     }
     
     func sendData(_ data: Data) {
-        let buffer = RTCDataBuffer(data: data, isBinary: true)
+        let buffer = RTCDataBuffer(data: data, isBinary: false)
         self.remoteDataChannel?.sendData(buffer)
     }
 }
