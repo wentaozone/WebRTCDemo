@@ -178,6 +178,7 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: SignalClientDelegate {
+    
     func signalClientDidConnect(_ signalClient: SignalingClient) {
         self.signalingConnected = true
     }
@@ -205,12 +206,13 @@ extension MainViewController: SignalClientDelegate {
     func signalClient(_ signalClient: SignalingClient, didInited clientId: String) {
         self.clientLabel.text = clientId
     }
-    func signalClient(_ signalClient: SignalingClient, didRecevied otherClientIds: [String]) {
-        let ss = otherClientIds.reduce("") { (result, id) -> String in
+    
+    func signalClient(_ signalClient: SignalingClient, didRecevied otherClient: [ClientModel]) {
+        let ss = otherClient.reduce("") { (result, client) -> String in
             if result == "" {
-                return result + id
+                return result + client.id
             }else {
-                return result + "\n" + id
+                return result + "\n" + client.id
             }
         }
         otherClientTV.text = ss

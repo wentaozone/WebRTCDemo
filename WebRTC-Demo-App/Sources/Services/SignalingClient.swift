@@ -15,8 +15,10 @@ protocol SignalClientDelegate: class {
     func signalClient(_ signalClient: SignalingClient, didReceiveRemoteSdp sdp: RTCSessionDescription)
     func signalClient(_ signalClient: SignalingClient, didReceiveCandidate candidate: RTCIceCandidate)
     func signalClient(_ signalClient: SignalingClient, didInited clientId: String)
-    func signalClient(_ signalClient: SignalingClient, didRecevied otherClientIds: [String])
+    func signalClient(_ signalClient: SignalingClient, didRecevied otherClient: [ClientModel])
 }
+
+let Notification_webRTCClieentDidDiscovery = Notification.Name("WebRTCClieentDidDiscovery")
 
 final class SignalingClient {
     
@@ -77,8 +79,9 @@ extension SignalingClient: WebSocketProviderDelegate {
     func webSocket(_ webSocket: WebSocketProvider, didInit clientId: String) {
         self.delegate?.signalClient(self, didInited: clientId)
     }
-    func webSocket(_ webSocket: WebSocketProvider, didRecevied otherClientIds: [String]) {
-        self.delegate?.signalClient(self, didRecevied: otherClientIds)
+    
+    func webSocket(_ webSocket: WebSocketProvider, didRecevied otherClient: [ClientModel]) {
+        self.delegate?.signalClient(self, didRecevied: otherClient)
     }
     
     func webSocket(_ webSocket: WebSocketProvider, didReceiveData data: Data) {

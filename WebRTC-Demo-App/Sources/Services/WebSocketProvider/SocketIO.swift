@@ -20,7 +20,7 @@ class SocketIO: NSObject, WebSocketProvider {
     private var fromUid = ""
     private var clientId = ""
     private let encoder = JSONEncoder()
-    private var otherClientIds = [String]()
+    private var otherClient = [ClientModel]()
 
     init(url: URL) {
         self.url = url
@@ -38,8 +38,8 @@ class SocketIO: NSObject, WebSocketProvider {
         })
         socket?.on(clientEvent: .disconnect, callback: { (data, ack) in
             print("socketIO: 连接断开")
-            self.otherClientIds.removeAll()
-            self.delegate?.webSocket(self, didRecevied: self.otherClientIds)
+            self.otherClient.removeAll()
+            self.delegate?.webSocket(self, didRecevied: self.otherClient)
             self.delegate?.webSocketDidDisconnect(self)
         })
         socket?.on("message", callback: { (array, ack) in
@@ -47,16 +47,27 @@ class SocketIO: NSObject, WebSocketProvider {
                 return
             }
             guard let from = dic["from"] as? String,
-                  let type = dic["type"] as? String else {
+                  let type = dic["type"] as? String,
+                  let __temp = dic["clientType"] as? String,
+                  let clientType = ClientModel.ClientType(rawValue: __temp),
+                  let group = dic["clientGroup"] as? String else {
                 return
             }
             
             print("socketIO: 收到from \(from) type: \(type)")
             self.fromUid = from
             
-            if !self.otherClientIds.contains(self.fromUid) {
-                self.otherClientIds.append(self.fromUid)
-                self.delegate?.webSocket(self, didRecevied: self.otherClientIds)
+            guard group == Config.clientGroup else {
+                return
+            }
+            guard clientType != Config.clientType else {
+                return
+            }
+            
+            if !self.otherClient.contains(where: {$0.id == self.fromUid}) {
+                let client = ClientModel(groupId: group, type: clientType, id: self.fromUid)
+                self.otherClient.append(client)
+                self.delegate?.webSocket(self, didRecevied: self.otherClient)
             }
             
             var payload = [String: AnyObject]()
@@ -123,6 +134,8 @@ class SocketIO: NSObject, WebSocketProvider {
         dic["type"] = type as AnyObject
         dic["payload"] = payload as AnyObject
         dic["from"] = clientId as AnyObject
+        dic["clientType"] = Config.clientType.rawValue as AnyObject
+        dic["clientGroup"] = Config.clientGroup as AnyObject
         
         socket?.emit("message", dic)
     }

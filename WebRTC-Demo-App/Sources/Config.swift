@@ -38,6 +38,10 @@ struct Config {
     static let socketIOURL = URL(string: "http://139.155.3.157:3000")!
     
     static let `default` = Config(signalingServerUrl: webSocketURL, webRTCIceServers: defaultIceServers)
+    
+    
+    static let clientType = ClientModel.ClientType.taurus
+    static let clientGroup = "Fiture"
 }
 extension Config {
     enum SignalingServerType {
