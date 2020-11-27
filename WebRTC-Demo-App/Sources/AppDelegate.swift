@@ -24,11 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func buildMainViewController() -> UIViewController {
-        
-        let webRTCClient = WebRTCClient(iceServers: self.config.webRTCIceServers)
-        let signalClient = self.buildSignalingClient()
-        let mainViewController = MainViewController(signalClient: signalClient, webRTCClient: webRTCClient)
-        let navViewController = UINavigationController(rootViewController: mainViewController)
+        let vc = RootViewController()
+//        let webRTCClient = WebRTCClient(iceServers: self.config.webRTCIceServers)
+//        let signalClient = self.buildSignalingClient()
+//        let mainViewController = MainViewController(signalClient: signalClient, webRTCClient: webRTCClient)
+        let navViewController = UINavigationController(rootViewController: vc)
         if #available(iOS 11.0, *) {
             navViewController.navigationBar.prefersLargeTitles = true
         }

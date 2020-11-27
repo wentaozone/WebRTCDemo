@@ -25,6 +25,8 @@
 		795A4A2A221E0FB100F8BB03 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A4A29221E0FB100F8BB03 /* Message.swift */; };
 		798FBA472200F681009F525E /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 798FBA462200F681009F525E /* MainViewController.xib */; };
 		798FBA492200F9A9009F525E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 798FBA482200F9A9009F525E /* LaunchScreen.storyboard */; };
+		C80EBABD2570F07C009D6FAD /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80EBABB2570F07C009D6FAD /* RootViewController.swift */; };
+		C80EBABE2570F07C009D6FAD /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C80EBABC2570F07C009D6FAD /* RootViewController.xib */; };
 		C894206925708F2B00610BE1 /* VirgoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894206725708F2B00610BE1 /* VirgoListViewController.swift */; };
 		C894206A25708F2B00610BE1 /* VirgoListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C894206825708F2B00610BE1 /* VirgoListViewController.xib */; };
 		C8C380B9256653C70042363A /* MeasureData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C380B8256653C70042363A /* MeasureData.swift */; };
@@ -57,6 +59,8 @@
 		798FBA482200F9A9009F525E /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9ED93846F4CF300F5D5F104C /* Pods-WebRTC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WebRTC/Pods-WebRTC.debug.xcconfig"; sourceTree = "<group>"; };
 		A930FC9FB2A066EE0A3E2176 /* Pods-WebRTC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTC.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebRTC/Pods-WebRTC.release.xcconfig"; sourceTree = "<group>"; };
+		C80EBABB2570F07C009D6FAD /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		C80EBABC2570F07C009D6FAD /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
 		C894206725708F2B00610BE1 /* VirgoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgoListViewController.swift; sourceTree = "<group>"; };
 		C894206825708F2B00610BE1 /* VirgoListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VirgoListViewController.xib; sourceTree = "<group>"; };
 		C8C380B8256653C70042363A /* MeasureData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureData.swift; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 		7921989F220107C90051F03F /* MainScreen */ = {
 			isa = PBXGroup;
 			children = (
+				C80EBABB2570F07C009D6FAD /* RootViewController.swift */,
+				C80EBABC2570F07C009D6FAD /* RootViewController.xib */,
 				79262EE820B0D6F600D576C1 /* MainViewController.swift */,
 				798FBA462200F681009F525E /* MainViewController.xib */,
 				C894206725708F2B00610BE1 /* VirgoListViewController.swift */,
@@ -284,6 +290,7 @@
 			files = (
 				79262EEE20B0D6F800D576C1 /* Assets.xcassets in Resources */,
 				798FBA472200F681009F525E /* MainViewController.xib in Resources */,
+				C80EBABE2570F07C009D6FAD /* RootViewController.xib in Resources */,
 				79177CAA20B2283F00BCD399 /* VideoViewController.xib in Resources */,
 				798FBA492200F9A9009F525E /* LaunchScreen.storyboard in Resources */,
 				C894206A25708F2B00610BE1 /* VirgoListViewController.xib in Resources */,
@@ -337,6 +344,7 @@
 			files = (
 				79262EE920B0D6F600D576C1 /* MainViewController.swift in Sources */,
 				792198A222011A450051F03F /* Config.swift in Sources */,
+				C80EBABD2570F07C009D6FAD /* RootViewController.swift in Sources */,
 				79177CA820B2276400BCD399 /* VideoViewController.swift in Sources */,
 				C894206925708F2B00610BE1 /* VirgoListViewController.swift in Sources */,
 				79262EE720B0D6F600D576C1 /* AppDelegate.swift in Sources */,

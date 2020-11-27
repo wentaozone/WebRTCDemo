@@ -35,12 +35,14 @@ struct Config {
     static let port = UInt16(3000)
     
 //    static let socketIOURL = URL(string: "http://192.168.0.108:3000")!
-    static let socketIOURL = URL(string: "http://139.155.3.157:3000")!
+//    static let socketIOURL = URL(string: "http://139.155.3.157:3000")!
+    static let socketIOURL = URL(string: "http://10.1.3.40:3000")!
     
     static let `default` = Config(signalingServerUrl: webSocketURL, webRTCIceServers: defaultIceServers)
     
     
-    static let clientType = ClientModel.ClientType.taurus
+    static var clientType = ClientModel.ClientType.virgo
+    static var clientId = ""
     static let clientGroup = "Fiture"
 }
 extension Config {

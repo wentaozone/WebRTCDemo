@@ -50,25 +50,12 @@ class SocketIO: NSObject, WebSocketProvider {
                   let type = dic["type"] as? String,
                   let __temp = dic["clientType"] as? String,
                   let clientType = ClientModel.ClientType(rawValue: __temp),
-                  let group = dic["clientGroup"] as? String else {
+                  let group = dic["group"] as? String else {
                 return
             }
             
             print("socketIO: 收到from \(from) type: \(type)")
             self.fromUid = from
-            
-            guard group == Config.clientGroup else {
-                return
-            }
-            guard clientType != Config.clientType else {
-                return
-            }
-            
-            if !self.otherClient.contains(where: {$0.id == self.fromUid}) {
-                let client = ClientModel(groupId: group, type: clientType, id: self.fromUid)
-                self.otherClient.append(client)
-                self.delegate?.webSocket(self, didRecevied: self.otherClient)
-            }
             
             var payload = [String: AnyObject]()
             if type != "init" {
@@ -77,6 +64,20 @@ class SocketIO: NSObject, WebSocketProvider {
             switch type {
             case "init":
                 self.onReceiveInit(fromUid: from)
+                
+                guard group == Config.clientGroup else {
+                    return
+                }
+                guard clientType != Config.clientType else {
+                    return
+                }
+                
+                if !self.otherClient.contains(where: {$0.id == self.fromUid}) {
+                    let client = ClientModel(groupId: group, type: clientType, id: self.fromUid)
+                    self.otherClient.append(client)
+                    self.delegate?.webSocket(self, didRecevied: self.otherClient)
+                }
+                
             case "offer":
                 self.onReceiveOffer(fromUid: from, payload: payload)
             case "answer":
@@ -94,7 +95,10 @@ class SocketIO: NSObject, WebSocketProvider {
                 self.delegate?.webSocket(self, didInit: id)
             }
             
-            self.socket?.emit("init", "")
+            var initData = [String: String]()
+            initData["group"] = Config.clientGroup
+            initData["clientType"] = Config.clientType.rawValue
+            self.socket?.emit("init", initData)
         })
         
         socket?.connect()
@@ -135,12 +139,14 @@ class SocketIO: NSObject, WebSocketProvider {
         dic["payload"] = payload as AnyObject
         dic["from"] = clientId as AnyObject
         dic["clientType"] = Config.clientType.rawValue as AnyObject
-        dic["clientGroup"] = Config.clientGroup as AnyObject
+        dic["group"] = Config.clientGroup as AnyObject
         
         socket?.emit("message", dic)
     }
     
     
+    
+    private func onReceiveMessage()
     
     private func onReceiveInit(fromUid: String){
         
