@@ -9,7 +9,7 @@
 import Foundation
 import CocoaAsyncSocket
 
-class Socket: NSObject, WebSocketProvider, GCDAsyncSocketDelegate {
+class GCDSocket: NSObject, WebSocketProvider, GCDAsyncSocketDelegate {
     private var socket: GCDAsyncSocket!
     private var backQueue = DispatchQueue(label: "com.fiture.webRTC", qos: .background, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)
     private let host: String

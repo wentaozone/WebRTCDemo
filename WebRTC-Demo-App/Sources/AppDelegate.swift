@@ -51,9 +51,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 webSocketProvider = StarscreamWebSocket(url: self.config.signalingServerUrl)
             }
         case .socket:
-            webSocketProvider = Socket(host: Config.host, port: Config.port)
+            webSocketProvider = GCDSocket(host: Config.host, port: Config.port)
         case .socketIO:
-            webSocketProvider = SocketIO(url: Config.socketIOURL)
+            webSocketProvider = IOSocket(url: Config.socketIOURL)
         }
         
         return SignalingClient(webSocket: webSocketProvider)

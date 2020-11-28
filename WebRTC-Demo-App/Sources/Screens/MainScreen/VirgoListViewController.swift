@@ -29,7 +29,10 @@ class VirgoListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        setupUI()
+        SocketManger.share.delegate = self
+        SocketManger.share.searchVirgo()
     }
     deinit {
         self.removeObservers()
@@ -56,6 +59,12 @@ class VirgoListViewController: UIViewController {
     
 }
 
+extension VirgoListViewController: SocketMangerDelegate {
+    func socketManger(_ socketManger: SocketManger, didSearchResult: [ClientModel]) {
+        self.dataArray = didSearchResult
+        tableView.reloadData()
+    }
+}
 
 extension VirgoListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

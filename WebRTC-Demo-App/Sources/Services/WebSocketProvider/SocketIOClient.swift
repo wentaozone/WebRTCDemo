@@ -10,12 +10,12 @@ import Foundation
 import SocketIO
 import WebRTC
 
-class SocketIO: NSObject, WebSocketProvider {
+class IOSocket: NSObject, WebSocketProvider {
     var delegate: WebSocketProviderDelegate?
     
     private var url: URL
-    private var socketManger: SocketManager?
-    private var socket: SocketIOClient?
+    private var socketManger: SocketIO.SocketManager
+    private var socket: SocketIOClient
     
     private var fromUid = ""
     private var clientId = ""
@@ -25,24 +25,25 @@ class SocketIO: NSObject, WebSocketProvider {
     init(url: URL) {
         self.url = url
         
-        socketManger = SocketManager(socketURL: url, config: [.compress, .log(false)])
-        socket = socketManger?.defaultSocket
+        socketManger = SocketIO.SocketManager(socketURL: url, config: [SocketIOClientOption.compress, .log(false)])
+        socket = socketManger.defaultSocket
+        
     }
     
     
     //MARK: WebSocketProvider
     func connect() {
-        socket?.on(clientEvent: .connect, callback: { (data, ack) in
+        socket.on(clientEvent: .connect, callback: { (data, ack) in
             print("socketIO: 连接成功")
             self.delegate?.webSocketDidConnect(self)
         })
-        socket?.on(clientEvent: .disconnect, callback: { (data, ack) in
+        socket.on(clientEvent: .disconnect, callback: { (data, ack) in
             print("socketIO: 连接断开")
             self.otherClient.removeAll()
             self.delegate?.webSocket(self, didRecevied: self.otherClient)
             self.delegate?.webSocketDidDisconnect(self)
         })
-        socket?.on("message", callback: { (array, ack) in
+        socket.on("message", callback: { (array, ack) in
             guard let dic = array.first as? [String: AnyObject] else {
                 return
             }
@@ -88,7 +89,7 @@ class SocketIO: NSObject, WebSocketProvider {
                 print("xxx")
             }
         })
-        socket?.on("id", callback: { (array, ack) in
+        socket.on("id", callback: { (array, ack) in
             if let id = array.first as? String {
                 print("socketIO: 收到clientId \(id)")
                 self.clientId = id
@@ -98,10 +99,11 @@ class SocketIO: NSObject, WebSocketProvider {
             var initData = [String: String]()
             initData["group"] = Config.clientGroup
             initData["clientType"] = Config.clientType.rawValue
-            self.socket?.emit("init", initData)
+            initData["clientId"] = Config.clientId
+            self.socket.emit("init", initData)
         })
         
-        socket?.connect()
+        socket.connect()
     }
     
     private let decoder = JSONDecoder()
@@ -141,12 +143,14 @@ class SocketIO: NSObject, WebSocketProvider {
         dic["clientType"] = Config.clientType.rawValue as AnyObject
         dic["group"] = Config.clientGroup as AnyObject
         
-        socket?.emit("message", dic)
+        socket.emit("message", dic)
     }
     
     
     
-    private func onReceiveMessage()
+    private func onReceiveMessage(){
+        
+    }
     
     private func onReceiveInit(fromUid: String){
         

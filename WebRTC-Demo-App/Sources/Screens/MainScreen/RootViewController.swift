@@ -15,13 +15,18 @@ class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        SocketManger.share.connect()
     }
 
 
     @IBAction func start(_ sender:UIButton){
         Config.clientId = clientIdTf.text!
         Config.clientType = switchBtn.isOn ? .taurus : .virgo
-        self.buildMainViewController()
+        
+        SocketManger.share.sendInit()
+        let vc = VirgoListViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     private func buildMainViewController() {
@@ -45,9 +50,9 @@ class RootViewController: UIViewController {
                 webSocketProvider = StarscreamWebSocket(url: Config.default.signalingServerUrl)
             }
         case .socket:
-            webSocketProvider = Socket(host: Config.host, port: Config.port)
+            webSocketProvider = GCDSocket(host: Config.host, port: Config.port)
         case .socketIO:
-            webSocketProvider = SocketIO(url: Config.socketIOURL)
+            webSocketProvider = IOSocket(url: Config.socketIOURL)
         }
         
         return SignalingClient(webSocket: webSocketProvider)
