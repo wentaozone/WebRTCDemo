@@ -26,11 +26,14 @@ class VirgoListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
     private var dataArray = [ClientModel]()
+    private let webRTCClient = WebRTCClient(iceServers: Config.default.webRTCIceServers)
+    private var signalClient: SignalingClient!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
+        signalClient = buildSignalingClient()
         SocketManger.share.delegate = self
         SocketManger.share.searchVirgo()
     }
@@ -57,12 +60,37 @@ class VirgoListViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
+    
+    private func buildSignalingClient() -> SignalingClient {
+        let webSocketProvider: WebSocketProvider
+        
+        switch Config.signalingType {
+        case .websocket:
+            if #available(iOS 13.0, *) {
+                webSocketProvider = NativeWebSocket(url: Config.default.signalingServerUrl)
+            } else {
+                webSocketProvider = StarscreamWebSocket(url: Config.default.signalingServerUrl)
+            }
+        case .socket:
+            webSocketProvider = GCDSocket(host: Config.host, port: Config.port)
+        case .socketIO:
+            webSocketProvider = IOSocket(url: Config.socketIOURL)
+        }
+        
+        return SignalingClient(webSocket: webSocketProvider)
+    }
 }
 
 extension VirgoListViewController: SocketMangerDelegate {
     func socketManger(_ socketManger: SocketManger, didSearchResult: [ClientModel]) {
         self.dataArray = didSearchResult
         tableView.reloadData()
+    }
+    
+    func socketManger(_ socketManger: SocketManger, didReceiveMessage: [String : AnyObject]) {
+        
+        
+        
     }
 }
 
@@ -80,6 +108,10 @@ extension VirgoListViewController: UITableViewDataSource {
 }
 extension VirgoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let item = self.dataArray[indexPath.row]
+        webRTCClient.offer { (rtcSdp) in
+            let sdp = SessionDescription(from: rtcSdp)
+            SocketManger.share.sendSDP(from: Config.clientId, to: item.id, sdp: sdp)
+        }
     }
 }

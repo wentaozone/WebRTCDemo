@@ -8,10 +8,14 @@
 
 import Foundation
 import SocketIO
+import WebRTC
 
 protocol SocketMangerDelegate {
     func socketManger(_ socketManger: SocketManger, didSearchResult:[ClientModel])
+    
+    func socketManger(_ socketManger: SocketManger, didReceiveMessage: [String: AnyObject])
 }
+
 
 class SocketManger {
     static let share = SocketManger()
@@ -48,10 +52,10 @@ class SocketManger {
             }
         })
         socket.on("message", callback: { (data, ack) in
-            guard let jsonString = data.first as? String else {
+            guard let data = data.first as? [String: AnyObject] else {
                 return
             }
-            self.didReceiveMessage(jsonString: jsonString, ack: ack)
+            self.didReceiveMessage(dic: data, ack: ack)
         })
         socket.on("searchResult", callback: { (data, ack) in
             guard let jsonString = data.first as? String else {
@@ -66,8 +70,9 @@ class SocketManger {
     private func didDisconnected(data: [Any], ack: SocketAckEmitter){
         
     }
-    private func didReceiveMessage(jsonString: String, ack: SocketAckEmitter){
-        
+    private func didReceiveMessage(dic: [String: AnyObject], ack: SocketAckEmitter){
+        guard let delegate = self.delegate else {return}
+        delegate.socketManger(self, didReceiveMessage: dic)
     }
     private func handleSearchResult(jsonString: String, ack: SocketAckEmitter){
         guard let array = [ClientModel].deserialize(from: jsonString) else {
@@ -92,6 +97,31 @@ class SocketManger {
         dic["clientId"] = Config.clientId
         dic["clientType"] = Config.clientType.rawValue
         socket.emit("search", dic)
+    }
+    
+    func sendCandidate(to:String, from:String, iceCandidate:IceCandidate){
+        var payload = [String: AnyObject]()
+        payload["label"] = iceCandidate.sdpMLineIndex as AnyObject
+        payload["id"] = iceCandidate.sdpMid as AnyObject
+        payload["candidate"] = iceCandidate.sdp as AnyObject
+        sendMessage(to: to, from: from, type: "candidate", payload: payload)
+    }
+    func sendSDP(from:String, to:String, sdp:SessionDescription){
+        var payload = [String: AnyObject]()
+        payload["type"] = sdp.type.rawValue as AnyObject
+        payload["sdp"] = sdp.sdp as AnyObject
+        sendMessage(to: to, from: from, type: sdp.type.rawValue.lowercased(), payload: payload)
+    }
+    private func sendMessage(to: String, from:String, type: String, payload: [String: AnyObject]){
+        var dic = [String: AnyObject]()
+        dic["to"] = to as AnyObject
+        dic["type"] = type as AnyObject
+        dic["payload"] = payload as AnyObject
+        dic["from"] = from as AnyObject
+        dic["clientType"] = Config.clientType.rawValue as AnyObject
+        dic["group"] = Config.clientGroup as AnyObject
+        
+        socket.emit("message", dic)
     }
     
 }
