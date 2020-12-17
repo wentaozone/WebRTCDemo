@@ -10,4 +10,5 @@ target 'WebRTC-Demo' do
     pod 'HandyJSON'
     pod 'Socket.IO-Client-Swift', '~> 15.2.0'
     pod 'Toast-Swift'
+    pod 'IQKeyboardManagerSwift'
 end

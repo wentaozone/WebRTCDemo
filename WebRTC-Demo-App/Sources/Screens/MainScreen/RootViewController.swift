@@ -8,6 +8,8 @@
 
 import UIKit
 import WebRTC
+import Toast_Swift
+import IQKeyboardManagerSwift
 
 class RootViewController: UIViewController {
 
@@ -16,12 +18,13 @@ class RootViewController: UIViewController {
     @IBOutlet private var startBtn: UIButton!
     private let webRTCClient = WebRTCClient(iceServers: Config.default.webRTCIceServers)
     @IBOutlet private var statusLabel: UILabel!
+    @IBOutlet private var dataLabel: UILabel!
     
     private var taurusData: ClientModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        IQKeyboardManager.shared.enable = true
         SocketManger.share.connect()
     }
 
@@ -49,6 +52,7 @@ class RootViewController: UIViewController {
         startBtn.setTitle("Virgo准备就绪", for: .normal)
         SocketManger.share.delegate = self
         webRTCClient.delegate = self
+        webRTCClient.speakerOff()
     }
 }
 
@@ -128,6 +132,7 @@ extension RootViewController: WebRTCClientDelegate {
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         guard let other = taurusData else {
             print("taurus 不存在")
+            self.view.makeToast("Taurus 不存在")
             return
         }
         let iceCandidate = IceCandidate(from: candidate)
@@ -171,6 +176,10 @@ extension RootViewController: WebRTCClientDelegate {
     func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
         guard let str = String(data: data, encoding: .utf8) else {
             return
+        }
+        
+        DispatchQueue.main.async {
+            self.dataLabel.text = str
         }
         
         let resString = "魔镜回复: "+str

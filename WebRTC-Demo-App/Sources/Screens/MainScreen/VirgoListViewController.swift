@@ -34,6 +34,8 @@ class VirgoListViewController: UIViewController {
     private var status = RTCIceConnectionState.count
     @IBOutlet private var statusLabel: UILabel!
     @IBOutlet private var sendDataBtn: UIButton!
+    @IBOutlet private var sendTextView: UITextView!
+    @IBOutlet private var respStatusLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +44,7 @@ class VirgoListViewController: UIViewController {
         SocketManger.share.delegate = self
         SocketManger.share.searchVirgo()
         webRTCClient.delegate = self
+        webRTCClient.speakerOff()
     }
     deinit {
         self.removeObservers()
@@ -64,6 +67,8 @@ class VirgoListViewController: UIViewController {
     
     private func setupUI(){
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        sendTextView.layer.borderWidth = 1
+        sendTextView.layer.borderColor = UIColor.black.cgColor
     }
     
     @IBAction private func sendData(){
@@ -71,11 +76,18 @@ class VirgoListViewController: UIViewController {
             self.view.makeToast("未处于连接状态")
             return
         }
-        let str = "测试了是多久"
+        guard let str = sendTextView.text else {
+            return
+        }
+        guard str.count > 0 else {
+            self.view.makeToast("内容不能为空")
+            return
+        }
         guard let data = str.data(using: .utf8) else {
             return
         }
         webRTCClient.sendData(data)
+        respStatusLabel.text = "已发送,等待答复"
     }
 }
 
@@ -212,13 +224,17 @@ extension VirgoListViewController: WebRTCClientDelegate {
         @unknown default:
             break
         }
-        
-        statusLabel.text = str
+        DispatchQueue.main.async {
+            self.statusLabel.text = str
+        }
     }
     func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
         guard let str = String(data: data, encoding: .utf8) else {
             return
         }
         print("收到数据: \(str)")
+        DispatchQueue.main.async {
+            self.respStatusLabel.text = "收到Virgo答复"
+        }
     }
 }

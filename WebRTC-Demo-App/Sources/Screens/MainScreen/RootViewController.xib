@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RootViewController" customModule="WebRTC_Demo" customModuleProvider="target">
             <connections>
                 <outlet property="clientIdTf" destination="p6i-IJ-xv4" id="wx3-ct-luD"/>
+                <outlet property="dataLabel" destination="eWs-ZV-gxs" id="Ebo-YK-X1S"/>
                 <outlet property="startBtn" destination="PEF-tH-U9K" id="LoJ-AL-OoV"/>
                 <outlet property="statusLabel" destination="0pZ-Fg-aey" id="d7M-Ps-WR8"/>
                 <outlet property="switchBtn" destination="g3I-UL-W4y" id="VrB-M7-IiJ"/>
@@ -48,16 +49,22 @@
                     <textInputTraits key="textInputTraits"/>
                 </textField>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PEF-tH-U9K">
-                    <rect key="frame" x="129" y="369" width="108" height="30"/>
+                    <rect key="frame" x="36" y="317" width="108" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" title="初始化搜索页面"/>
                     <connections>
                         <action selector="start:" destination="-1" eventType="touchUpInside" id="iJt-Zp-Y9T"/>
                     </connections>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0pZ-Fg-aey">
-                    <rect key="frame" x="162" y="432" width="42" height="21"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="连接状态:未知" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0pZ-Fg-aey">
+                    <rect key="frame" x="230" y="326" width="109" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="收到数据" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eWs-ZV-gxs">
+                    <rect key="frame" x="40" y="389" width="334" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -65,7 +72,13 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <point key="canvasLocation" x="-358" y="104"/>
+            <constraints>
+                <constraint firstItem="eWs-ZV-gxs" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="345" id="JEc-gH-0Kc"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="eWs-ZV-gxs" secondAttribute="trailing" constant="40" id="JOj-gf-FFG"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="eWs-ZV-gxs" secondAttribute="bottom" constant="20" id="PKL-Wc-UVk"/>
+                <constraint firstItem="eWs-ZV-gxs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="bU0-dO-TQe"/>
+            </constraints>
+            <point key="canvasLocation" x="-359.4202898550725" y="103.79464285714285"/>
         </view>
     </objects>
     <resources>
