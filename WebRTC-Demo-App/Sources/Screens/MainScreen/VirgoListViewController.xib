@@ -11,6 +11,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VirgoListViewController" customModule="WebRTC_Demo" customModuleProvider="target">
             <connections>
+                <outlet property="sendDataBtn" destination="6mt-OC-DDx" id="YOY-qu-UGh"/>
+                <outlet property="statusLabel" destination="00X-mK-eYr" id="Hza-ef-aIi"/>
                 <outlet property="tableView" destination="iIM-47-bV2" id="Zri-tH-W5g"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -21,13 +23,28 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iIM-47-bV2">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="518"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="i0i-yk-5mr"/>
                         <outlet property="delegate" destination="-1" id="PVx-Sa-3zD"/>
                     </connections>
                 </tableView>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6mt-OC-DDx">
+                    <rect key="frame" x="173" y="693" width="68" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="send data"/>
+                    <connections>
+                        <action selector="sendData" destination="-1" eventType="touchUpInside" id="Cn4-fz-dxn"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="00X-mK-eYr">
+                    <rect key="frame" x="173" y="619" width="42" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -35,7 +52,7 @@
                 <constraint firstItem="iIM-47-bV2" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="D5W-V6-ydh"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="iIM-47-bV2" secondAttribute="trailing" id="aCh-0D-mt6"/>
                 <constraint firstItem="iIM-47-bV2" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="d32-d8-5Sa"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="iIM-47-bV2" secondAttribute="bottom" id="eIL-35-Lb1"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="iIM-47-bV2" secondAttribute="bottom" constant="300" id="eIL-35-Lb1"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="92.410714285714278"/>
         </view>

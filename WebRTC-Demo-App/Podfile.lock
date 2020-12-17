@@ -5,6 +5,7 @@ PODS:
   - Socket.IO-Client-Swift (15.2.0):
     - Starscream (~> 3.1)
   - Starscream (3.1.1)
+  - Toast-Swift (5.0.1)
 
 DEPENDENCIES:
   - CocoaAsyncSocket
@@ -12,6 +13,7 @@ DEPENDENCIES:
   - HandyJSON
   - Socket.IO-Client-Swift (~> 15.2.0)
   - Starscream
+  - Toast-Swift
 
 SPEC REPOS:
   https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
@@ -20,6 +22,7 @@ SPEC REPOS:
     - HandyJSON
     - Socket.IO-Client-Swift
     - Starscream
+    - Toast-Swift
 
 SPEC CHECKSUMS:
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
@@ -27,7 +30,8 @@ SPEC CHECKSUMS:
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 
-PODFILE CHECKSUM: 006afb365500d3998bf9037d7da5153923a961aa
+PODFILE CHECKSUM: b8c59f0ccab2af6a87649f2a79b0f2947b8403fe
 
 COCOAPODS: 1.10.0

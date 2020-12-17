@@ -9,6 +9,7 @@
 import UIKit
 import HandyJSON
 import WebRTC
+import Toast_Swift
 
 struct ClientModel: HandyJSON {
     
@@ -28,15 +29,19 @@ class VirgoListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     private var dataArray = [ClientModel]()
     private let webRTCClient = WebRTCClient(iceServers: Config.default.webRTCIceServers)
-    private var signalClient: SignalingClient!
+    private var peerData: ClientModel?
+    
+    private var status = RTCIceConnectionState.count
+    @IBOutlet private var statusLabel: UILabel!
+    @IBOutlet private var sendDataBtn: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
-        signalClient = buildSignalingClient()
         SocketManger.share.delegate = self
         SocketManger.share.searchVirgo()
+        webRTCClient.delegate = self
     }
     deinit {
         self.removeObservers()
@@ -61,24 +66,16 @@ class VirgoListViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
-    
-    private func buildSignalingClient() -> SignalingClient {
-        let webSocketProvider: WebSocketProvider
-        
-        switch Config.signalingType {
-        case .websocket:
-            if #available(iOS 13.0, *) {
-                webSocketProvider = NativeWebSocket(url: Config.default.signalingServerUrl)
-            } else {
-                webSocketProvider = StarscreamWebSocket(url: Config.default.signalingServerUrl)
-            }
-        case .socket:
-            webSocketProvider = GCDSocket(host: Config.host, port: Config.port)
-        case .socketIO:
-            webSocketProvider = IOSocket(url: Config.socketIOURL)
+    @IBAction private func sendData(){
+        guard status == .connected else {
+            self.view.makeToast("未处于连接状态")
+            return
         }
-        
-        return SignalingClient(webSocket: webSocketProvider)
+        let str = "测试了是多久"
+        guard let data = str.data(using: .utf8) else {
+            return
+        }
+        webRTCClient.sendData(data)
     }
 }
 
@@ -167,9 +164,61 @@ extension VirgoListViewController: UITableViewDataSource {
 extension VirgoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = self.dataArray[indexPath.row]
+        peerData = item
         webRTCClient.offer { (rtcSdp) in
             let sdp = SessionDescription(from: rtcSdp)
             SocketManger.share.sendSDP(from: Config.clientId, to: item.id, sdp: sdp)
         }
+    }
+}
+
+
+extension VirgoListViewController: WebRTCClientDelegate {
+    func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
+        guard let other = peerData else {
+            return
+        }
+        let iceCandidate = IceCandidate(from: candidate)
+        SocketManger.share.sendCandidate(to: other.id, from: Config.clientId , iceCandidate: iceCandidate)
+    }
+    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
+        status = state
+        var str = "未知"
+        switch state {
+        case .connected:
+            str = "已连接"
+            print("已连接")
+        case .checking:
+            str = "checking"
+            print("checking")
+        case .count:
+            str = "count"
+            print("count")
+        case .new:
+            str = "new"
+            print("new")
+        case .disconnected:
+            str = "连接已断开"
+            print("连接已断开")
+        case .completed:
+            str = "completed"
+            print("completed")
+        case .failed:
+            str = "failed"
+            print("failed")
+        case .closed:
+            str = "closed"
+            print("closed")
+        @unknown default:
+            break
+        }
+        
+        statusLabel.text = str
+    }
+    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
+        guard let str = String(data: data, encoding: .utf8) else {
+            return
+        }
+        print("收到数据: \(str)")
     }
 }

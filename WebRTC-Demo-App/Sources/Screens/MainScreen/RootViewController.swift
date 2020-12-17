@@ -15,8 +15,9 @@ class RootViewController: UIViewController {
     @IBOutlet private var clientIdTf: UITextField!
     @IBOutlet private var startBtn: UIButton!
     private let webRTCClient = WebRTCClient(iceServers: Config.default.webRTCIceServers)
+    @IBOutlet private var statusLabel: UILabel!
     
-    private let encoder = JSONEncoder()
+    private var taurusData: ClientModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +48,7 @@ class RootViewController: UIViewController {
     private func intoVirgo(){
         startBtn.setTitle("Virgo准备就绪", for: .normal)
         SocketManger.share.delegate = self
+        webRTCClient.delegate = self
     }
 }
 
@@ -57,17 +59,20 @@ extension RootViewController: SocketMangerDelegate {
     func socketManger(_ socketManger: SocketManger, didReceiveMessage: [String : AnyObject]) {
         let dic = didReceiveMessage
         guard let from = dic["from"] as? String,
-              let type = dic["type"] as? String
-//              let __temp = dic["clientType"] as? String,
-//              let clientType = ClientModel.ClientType(rawValue: __temp),
-//              let group = dic["group"] as? String
-        else {
+              let type = dic["type"] as? String,
+              let __temp = dic["clientType"] as? String,
+              let clientType = ClientModel.ClientType(rawValue: __temp),
+              let group = dic["group"] as? String else {
             return
         }
-        
         guard let payload = dic["payload"] as? [String: AnyObject] else {
             return
         }
+        
+        taurusData = ClientModel()
+        taurusData?.groupId = group
+        taurusData?.id = from
+        taurusData?.type = clientType
         
         switch type {
         case "offer":
@@ -116,5 +121,62 @@ extension RootViewController: SocketMangerDelegate {
             let rtcIceCandiate = RTCIceCandidate(sdp: candidate, sdpMLineIndex: label, sdpMid: id)
             webRTCClient.set(remoteCandidate: rtcIceCandiate)
         }
+    }
+}
+
+extension RootViewController: WebRTCClientDelegate {
+    func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
+        guard let other = taurusData else {
+            print("taurus 不存在")
+            return
+        }
+        let iceCandidate = IceCandidate(from: candidate)
+        SocketManger.share.sendCandidate(to: other.id, from: Config.clientId , iceCandidate: iceCandidate)
+    }
+    
+    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
+        var str = "未知"
+        switch state {
+        case .connected:
+            str = "已连接"
+            print("已连接")
+        case .checking:
+            str = "checking"
+            print("checking")
+        case .count:
+            str = "count"
+            print("count")
+        case .new:
+            str = "new"
+            print("new")
+        case .disconnected:
+            str = "连接已断开"
+            print("连接已断开")
+        case .completed:
+            str = "completed"
+            print("completed")
+        case .failed:
+            str = "failed"
+            print("failed")
+        case .closed:
+            str = "closed"
+            print("closed")
+        @unknown default:
+            break
+        }
+        
+        statusLabel.text = str
+    }
+    
+    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
+        guard let str = String(data: data, encoding: .utf8) else {
+            return
+        }
+        
+        let resString = "魔镜回复: "+str
+        guard let resData = resString.data(using: .utf8) else {
+            return
+        }
+        webRTCClient.sendData(resData)
     }
 }
