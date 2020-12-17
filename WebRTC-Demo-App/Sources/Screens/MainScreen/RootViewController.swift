@@ -13,6 +13,7 @@ class RootViewController: UIViewController {
 
     @IBOutlet private var switchBtn: UISwitch!
     @IBOutlet private var clientIdTf: UITextField!
+    @IBOutlet private var startBtn: UIButton!
     private let webRTCClient = WebRTCClient(iceServers: Config.default.webRTCIceServers)
     
     private let encoder = JSONEncoder()
@@ -44,6 +45,7 @@ class RootViewController: UIViewController {
     }
     
     private func intoVirgo(){
+        startBtn.setTitle("Virgo准备就绪", for: .normal)
         SocketManger.share.delegate = self
     }
 }
@@ -97,9 +99,6 @@ extension RootViewController: SocketMangerDelegate {
             }
         }
     }
-    
-    
-    
     private func onReceiveAnswer(fromUid: String, payload: [String: AnyObject]){
         if let sdpDesp =  payload["sdp"] as? String{
             

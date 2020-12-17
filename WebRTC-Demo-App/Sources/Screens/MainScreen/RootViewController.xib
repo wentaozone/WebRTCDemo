@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RootViewController" customModule="WebRTC_Demo" customModuleProvider="target">
             <connections>
                 <outlet property="clientIdTf" destination="p6i-IJ-xv4" id="wx3-ct-luD"/>
+                <outlet property="startBtn" destination="PEF-tH-U9K" id="LoJ-AL-OoV"/>
                 <outlet property="switchBtn" destination="g3I-UL-W4y" id="VrB-M7-IiJ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
